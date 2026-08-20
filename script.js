@@ -13,7 +13,10 @@ function parseCSV(text) {
 
 function teamNameFromId(teamIDs, id) {
     const team = teamIDs.find(row => row.slice(2).includes(String(id)));
-    return team ? team[0] : "Unknown team";
+    if(team) return team[0];
+
+    console.warn("Unknown team ID:", id);
+    return `Unknown team (${id})`;
 }
 
 function populateTeamSelect(select, teamIDs, excludedIndex, selectedIndex) {
