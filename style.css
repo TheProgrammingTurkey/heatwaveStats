@@ -98,8 +98,7 @@ body {
     font-weight: 700;
 }
 
-.home-button:hover,
-.home-button.primary {
+.home-button:hover {
     background-color: #466eb4;
     color: white;
 }
