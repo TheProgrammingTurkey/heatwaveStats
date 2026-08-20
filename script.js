@@ -5,7 +5,7 @@ async function loadCSV(url) {
 }
 
 function parseCSV(text) {
-  const rows = text.trim().split(/\r?\n/); // handles both types
+  const rows = text.trim().split(/\r?\n/);
   return rows.map(row => row.split(","));
 }
 
