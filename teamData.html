@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatwave Stats | Team Data</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body onload="initTeamData();">
+    <nav class="navbar" aria-label="Main navigation">
+        <a class="nav-brand" href="index.html">Heatwave Stats</a>
+        <div class="nav-links">
+            <a href="standings.html">Standings</a>
+            <a class="active" href="teamData.html">Team Data</a>
+        </div>
+    </nav>
+
+    <h1>
+        <select id="selectedTeam" aria-label="Select team"></select>
+        Stats
+    </h1>
+    <div class="container">
+        <div class="block" id="teamResults">
+            <div class="overallRecord">
+                <h2>Overall Record</h2>
+                <p></p>
+                <h2>Overall Goals For vs Goals Against</h2>
+                <p></p>
+            </div>
+            <h2>All Time Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Winner</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody class="historicalResults">
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="block" id="teamVsTeam">
+            <div class="overallRecord">
+                <h2>Overall Record vs
+                    <select id="opponentTeam" aria-label="Select opponent team"></select>
+                </h2>
+                <p></p>
+                <h2>Overall Goals For vs Goals Against</h2>
+                <p></p>
+            </div>
+            <h2>All Time Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Winner</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody class="historicalResults">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

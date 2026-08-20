@@ -6,6 +6,145 @@ body {
     background-color: #f5f5f5;
 }
 
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 34px;
+    max-width: 1100px;
+    margin: 0 auto 42px;
+    padding: 16px 0;
+    border-bottom: 1px solid #d8d8d8;
+}
+
+.nav-brand,
+.nav-links a {
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-brand {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.nav-links a {
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    color: #666;
+    font-size: 14px;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    border-bottom-color: #466eb4;
+    color: #333;
+}
+
+.home-page {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #f5f5f5 0%, #e7edf5 100%);
+}
+
+.home-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.home-hero {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 34px 0 72px;
+}
+
+.home-logo {
+    display: block;
+    width: min(100%, 560px);
+    height: auto;
+    margin: 0 auto 34px;
+    border-radius: 8px;
+}
+
+.home-hero h1,
+.page-heading h1 {
+    margin: 0;
+    color: #222;
+    font-size: 48px;
+    line-height: 1;
+    text-align: center;
+}
+
+.home-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.home-button {
+    display: inline-block;
+    padding: 12px 18px;
+    border: 1px solid #466eb4;
+    border-radius: 5px;
+    color: #466eb4;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.home-button:hover,
+.home-button.primary {
+    background-color: #466eb4;
+    color: white;
+}
+
+.page-heading {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.page-heading h1 {
+    font-size: 42px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#selectedTeam,
+#opponentTeam {
+    max-width: 100%;
+    margin-left: 6px;
+    padding: 2px 22px 2px 2px;
+    border: 0;
+    border-bottom: 1px dashed #999;
+    border-radius: 0;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.8em;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+#selectedTeam:hover,
+#opponentTeam:hover {
+    border-bottom-color: #466eb4;
+}
+
+#selectedTeam:focus,
+#opponentTeam:focus {
+    outline: 2px solid rgba(70, 110, 180, 0.3);
+    outline-offset: 2px;
+    border-bottom-color: #466eb4;
+}
+
 .image-container {
     width: 100%;
     height: 300px;
@@ -24,6 +163,25 @@ body {
     border-radius: 8px;
 }
 
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.block {
+    padding: 30px;
+    background: #eee;
+    border-radius: 10px;
+}
+
+/* Center the last block if it's alone on its row */
+.block:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 10px);
+}
+
 .tier-section {
     margin-bottom: 40px;
 }
@@ -38,31 +196,6 @@ body {
     font-weight: bold;
 }
 
-.tier-header.platinum {
-    background-color: #e5b4f4;
-    color: #333;
-}
-
-.tier-header.gold {
-    background-color: #ffd700;
-    color: #333;
-}
-
-.tier-header.silver {
-    background-color: #c0c0c0;
-    color: #333;
-}
-
-.tier-header.bronze {
-    background-color: #cd7f32;
-    color: white;
-}
-
-.tier-header.inactive {
-    background-color: #999999;
-    color: white;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -70,6 +203,35 @@ table {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
+}
+
+/* Show about ten history rows at a time without limiting the data loaded by JavaScript. */
+.block table {
+    display: block;
+}
+
+.block table thead,
+.block table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.block table tbody {
+    display: block;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.block table th,
+.block table td {
+    width: 50%;
+}
+
+.block table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 thead {

@@ -5,86 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heatwave Stats</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
 </head>
-<body>
-    <div class="image-container">
-        <img src="heatwaveStats.png">
-    </div>
-    
-    <div class="tier-section">
-        <h2 class="tier-header platinum">Platinum</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Win Rate</th>
-                </tr>
-            </thead>
-            <tbody id="platinumRecords"></tbody>
-        </table>
-    </div>
-    
-    <div class="tier-section">
-        <h2 class="tier-header gold">Gold</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Win Rate</th>
-                </tr>
-            </thead>
-            <tbody id="goldRecords"></tbody>
-        </table>
-    </div>
-    
-    <div class="tier-section">
-        <h2 class="tier-header silver">Silver</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Win Rate</th>
-                </tr>
-            </thead>
-            <tbody id="silverRecords"></tbody>
-        </table>
-    </div>
-    
-    <div class="tier-section">
-        <h2 class="tier-header bronze">Bronze</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Win Rate</th>
-                </tr>
-            </thead>
-            <tbody id="bronzeRecords"></tbody>
-        </table>
-    </div>
-    
-    <div class="tier-section">
-        <h2 class="tier-header inactive">Inactive Teams (N/A)</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
-                    <th>Win Rate</th>
-                </tr>
-            </thead>
-            <tbody id="naRecords"></tbody>
-        </table>
-    </div>
+<body class="home-page">
+    <nav class="navbar" aria-label="Main navigation">
+        <a class="nav-brand" href="index.html">Heatwave Stats</a>
+        <div class="nav-links">
+            <a href="standings.html">Standings</a>
+            <a href="teamData.html">Team Data</a>
+        </div>
+    </nav>
+
+    <main class="home-content">
+        <section class="home-hero" aria-labelledby="home-title">
+            <img class="home-logo" src="heatwaveStats.png" alt="Heatwave Stats logo">
+            <div class="home-actions">
+                <a class="home-button primary" href="standings.html">View standings</a>
+                <a class="home-button" href="teamData.html">Explore team data</a>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

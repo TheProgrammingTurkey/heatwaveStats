@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatwave Stats | Standings</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body onload="initStandings();">
+    <nav class="navbar" aria-label="Main navigation">
+        <a class="nav-brand" href="index.html">Heatwave Stats</a>
+        <div class="nav-links">
+            <a class="active" href="standings.html">Standings</a>
+            <a href="teamData.html">Team Data</a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-heading">
+            <h1>Standings</h1>
+        </header>
+
+        <div class="tier-section">
+            <h2 class="tier-header platinum" style="background-color: #e5b4f4; color: #333;">Platinum</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="platinumRecords"></tbody>
+            </table>
+        </div>
+        
+        <div class="tier-section">
+            <h2 class="tier-header gold" style="background-color: #ffd700; color: #333;">Gold</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="goldRecords"></tbody>
+            </table>
+        </div>
+        
+        <div class="tier-section">
+            <h2 class="tier-header silver" style="background-color: #c0c0c0; color: #333;">Silver</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="silverRecords"></tbody>
+            </table>
+        </div>
+        
+        <div class="tier-section">
+            <h2 class="tier-header bronze" style="background-color: #cd7f32; color: white;">Bronze</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="bronzeRecords"></tbody>
+            </table>
+        </div>
+        
+        <div class="tier-section">
+            <h2 class="tier-header inactive" style="background-color: #999999; color: white;">Inactive Teams (N/A)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                    </tr>
+                </thead>
+                <tbody id="naRecords"></tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
