@@ -209,6 +209,11 @@ table {
     display: block;
 }
 
+.block h2[hidden],
+.block table[hidden] {
+    display: none !important;
+}
+
 .block table thead,
 .block table tbody tr {
     display: table;

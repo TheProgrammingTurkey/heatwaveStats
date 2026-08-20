@@ -181,11 +181,15 @@ async function teamVSteam(games, team1, team2){
     const overallRecord = teamVsTeamBlock.getElementsByClassName("overallRecord")[0];
     const headings = overallRecord.getElementsByTagName("h2");
     const paragraphs = overallRecord.getElementsByTagName("p");
+    const resultsHeading = teamVsTeamBlock.getElementsByTagName("h2")[2];
+    const resultsTable = teamVsTeamBlock.getElementsByTagName("table")[0];
     const tableBody = teamVsTeamBlock.getElementsByClassName("historicalResults")[0];
     tableBody.replaceChildren();
 
     headings[1].textContent = "Overall Goals For vs Goals Against";
-    teamVsTeamBlock.getElementsByTagName("h2")[2].textContent = "All Time Results";
+    resultsHeading.textContent = "All Time Results";
+    resultsHeading.hidden = false;
+    resultsTable.hidden = false;
 
     // Check both home/away arrangements so the matchup is order-independent.
     games.forEach(game => {
@@ -219,7 +223,8 @@ async function teamVSteam(games, team1, team2){
         headings[1].textContent = `${team1[0]} has never played against ${team2[0]}`;
         paragraphs[0].textContent = "";
         paragraphs[1].textContent = "";
-        teamVsTeamBlock.getElementsByTagName("h2")[2].textContent = "All Time Results";
+        resultsHeading.hidden = true;
+        resultsTable.hidden = true;
         return;
     }
     paragraphs[0].textContent = team1[0] + " " + team1Wins + " - " + team1Losses + " " + team2[0];
