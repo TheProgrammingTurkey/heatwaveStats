@@ -272,6 +272,19 @@ tbody tr:last-child td {
     border-bottom: none;
 }
 
+.season-header {
+    background-color: #dfe8f7;
+    font-weight: 700;
+    color: #1d3557;
+    text-align: center;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.season-header:hover {
+    background-color: #dfe8f7;
+}
+
 td:nth-child(1) {
     font-weight: 600;
     color: #333;

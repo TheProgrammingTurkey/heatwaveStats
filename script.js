@@ -81,16 +81,16 @@ async function allTimeRecord(games, team){
     let losses = 0;
     // Count a win or loss whenever this team appears in a completed game.
     games.forEach(game => {
-        if(team.includes(game[1])){
-            if(parseInt(game[3]) > parseInt(game[4])){
+        if(team.includes(game[2])){
+            if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
             } else {
                 losses++;
             }
         }
 
-        if(team.includes(game[2])){
-            if(parseInt(game[4]) > parseInt(game[3])){
+        if(team.includes(game[3])){
+            if(parseInt(game[5]) > parseInt(game[4])){
                 wins++;
             } else {
                 losses++;
@@ -177,6 +177,8 @@ async function teamVSteam(games, team1, team2){
     let team1Losses = 0;
     let team1Score = 0;
     let team2Score = 0;
+    let season = "";
+    let seasonResults = [];
     const teamVsTeamBlock = document.getElementById("teamVsTeam");
     const overallRecord = teamVsTeamBlock.getElementsByClassName("overallRecord")[0];
     const headings = overallRecord.getElementsByTagName("h2");
@@ -193,32 +195,45 @@ async function teamVSteam(games, team1, team2){
 
     // Check both home/away arrangements so the matchup is order-independent.
     games.forEach(game => {
-        let gameWinner = "";
-        if(team1.includes(game[1]) && team2.includes(game[2])){
-            if(parseInt(game[3]) > parseInt(game[4])){
-                team1Wins++;
-                gameLogs.push([team1[0], game[3], game[4]]);
-            } else {
-                team1Losses++;
-                gameWinner = team2[0];
-                gameLogs.push([team2[0], game[4], game[3]]);
+        if(game[0] !== season){
+            if(season !== "" && seasonResults.length > 0){
+                gameLogs.push({ type: "season", season });
+                gameLogs.push(...seasonResults);
             }
-            team1Score+=parseInt(game[3]);
-            team2Score+=parseInt(game[4]);
+            season = game[0];
+            seasonResults = [];
         }
 
-        if(team1.includes(game[2]) && team2.includes(game[1])){
-            if(parseInt(game[4]) > parseInt(game[3])){
+        if(team1.includes(game[2]) && team2.includes(game[3])){
+            if(parseInt(game[4]) > parseInt(game[5])){
                 team1Wins++;
-                gameLogs.push([team1[0], game[4], game[3]]);
+                seasonResults.push({ type: "result", winner: team1[0], score: `${game[4]}-${game[5]}` });
             } else {
                 team1Losses++;
-                gameLogs.push([team2[0], game[3], game[4]]);
+                seasonResults.push({ type: "result", winner: team2[0], score: `${game[5]}-${game[4]}` });
             }
             team1Score+=parseInt(game[4]);
-            team2Score+=parseInt(game[3]);
+            team2Score+=parseInt(game[5]);
+        }
+
+        if(team1.includes(game[3]) && team2.includes(game[2])){
+            if(parseInt(game[5]) > parseInt(game[4])){
+                team1Wins++;
+                seasonResults.push({ type: "result", winner: team1[0], score: `${game[5]}-${game[4]}` });
+            } else {
+                team1Losses++;
+                seasonResults.push({ type: "result", winner: team2[0], score: `${game[4]}-${game[5]}` });
+            }
+            team1Score+=parseInt(game[5]);
+            team2Score+=parseInt(game[4]);
         }
     });
+
+    if(season !== "" && seasonResults.length > 0){
+        gameLogs.push({ type: "season", season });
+        gameLogs.push(...seasonResults);
+    }
+
     if(gameLogs.length == 0){
         headings[1].textContent = `${team1[0]} has never played against ${team2[0]}`;
         paragraphs[0].textContent = "";
@@ -231,12 +246,23 @@ async function teamVSteam(games, team1, team2){
     paragraphs[1].textContent = team1[0] + " " + team1Score + " - " + team2Score + " " + team2[0];
     gameLogs.forEach(game => {
         const row = document.createElement("tr");
-        const winningTeam = document.createElement("td")
-        winningTeam.textContent = game[0];
-        const scoreLine = document.createElement("td")
-        scoreLine.textContent = game[1]+"-"+game[2];
-        row.appendChild(winningTeam);
-        row.appendChild(scoreLine);
+
+        if(game.type === "season"){
+            const curSeason = document.createElement("td");
+            curSeason.colSpan = 2;
+            curSeason.textContent = game.season;
+            curSeason.classList.add("season-header");
+            row.appendChild(curSeason);
+        }
+        else{
+            const winningTeam = document.createElement("td");
+            winningTeam.textContent = game.winner;
+            const scoreLine = document.createElement("td");
+            scoreLine.textContent = game.score;
+            row.appendChild(winningTeam);
+            row.appendChild(scoreLine);
+        }
+
         tableBody.appendChild(row);
     });
 }
@@ -247,32 +273,50 @@ async function teamResultsHistory(team, teamIDs, games){
     let losses = 0;
     let goalsFor = 0;
     let goalsAgainst = 0;
+    let season = "";
+    let seasonResults = [];
+
     // Count a win or loss whenever this team appears in a completed game.
     games.forEach(game => {
-        if(team.includes(game[1])){
-            if(parseInt(game[3]) > parseInt(game[4])){
-                wins++;
-                gameLogs.push([team[0], game[3], game[4]]);
-            } else {
-                losses++;
-                gameLogs.push([teamNameFromId(teamIDs, game[2]), game[4], game[3]]);
+        if(game[0] !== season){
+            if(season !== "" && seasonResults.length > 0){
+                gameLogs.push({ type: "season", season });
+                gameLogs.push(...seasonResults);
             }
-            goalsFor+=parseInt(game[3]);
-            goalsAgainst+=parseInt(game[4]);
+            season = game[0];
+            seasonResults = [];
         }
 
         if(team.includes(game[2])){
-            if(parseInt(game[4]) > parseInt(game[3])){
+            if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
-                gameLogs.push([team[0], game[4], game[3]]);
+                seasonResults.push({ type: "result", winner: team[0], score: `${game[4]}-${game[5]}`});
             } else {
                 losses++;
-                gameLogs.push([teamNameFromId(teamIDs, game[1]), game[3], game[4]]);
+                seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[3]), score: `${game[5]}-${game[4]}`});
             }
             goalsFor+=parseInt(game[4]);
-            goalsAgainst+=parseInt(game[3]);
+            goalsAgainst+=parseInt(game[5]);
+        }
+
+        if(team.includes(game[3])){
+            if(parseInt(game[5]) > parseInt(game[4])){
+                wins++;
+                seasonResults.push({ type: "result", winner: team[0], score: `${game[5]}-${game[4]}`});
+            } else {
+                losses++;
+                seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[2]), score: `${game[4]}-${game[5]}`});
+            }
+            goalsFor+=parseInt(game[5]);
+            goalsAgainst+=parseInt(game[4]);
         }
     });
+
+    if(season !== "" && seasonResults.length > 0){
+        gameLogs.push({ type: "season", season });
+        gameLogs.push(...seasonResults);
+    }
+
     document.getElementById("teamResults").getElementsByClassName("overallRecord")[0].getElementsByTagName("p")[0].innerHTML = wins + " - " + losses;
     document.getElementById("teamResults").getElementsByClassName("overallRecord")[0].getElementsByTagName("p")[1].innerHTML = "GF " + goalsFor + " - " + goalsAgainst + " GA";
     const tableBody = document.getElementById("teamResults").getElementsByClassName("historicalResults")[0];
@@ -280,12 +324,23 @@ async function teamResultsHistory(team, teamIDs, games){
 
     gameLogs.forEach(game => {
         const row = document.createElement("tr");
-        const winningTeam = document.createElement("td")
-        winningTeam.textContent = game[0];
-        const scoreLine = document.createElement("td")
-        scoreLine.textContent = game[1]+"-"+game[2];
-        row.appendChild(winningTeam);
-        row.appendChild(scoreLine);
+
+        if(game.type === "season"){
+            const curSeason = document.createElement("td");
+            curSeason.colSpan = 2;
+            curSeason.textContent = game.season;
+            curSeason.classList.add("season-header");
+            row.appendChild(curSeason);
+        }
+        else{
+            const winningTeam = document.createElement("td");
+            winningTeam.textContent = game.winner;
+            const scoreLine = document.createElement("td");
+            scoreLine.textContent = game.score;
+            row.appendChild(winningTeam);
+            row.appendChild(scoreLine);
+        }
+
         tableBody.appendChild(row);
     });
 }
