@@ -275,6 +275,9 @@ async function teamResultsHistory(team, teamIDs, games){
     let goalsAgainst = 0;
     let season = "";
     let seasonResults = [];
+    let seasonWins = 0;
+    let seasonLosses = 0;
+    let seasonRecords = [];
 
     // Count a win or loss whenever this team appears in a completed game.
     games.forEach(game => {
@@ -282,17 +285,22 @@ async function teamResultsHistory(team, teamIDs, games){
             if(season !== "" && seasonResults.length > 0){
                 gameLogs.push({ type: "season", season });
                 gameLogs.push(...seasonResults);
+                seasonRecords.push([season, seasonWins, seasonLosses]);
             }
             season = game[0];
             seasonResults = [];
+            seasonWins = 0;
+            seasonLosses = 0;
         }
 
         if(team.includes(game[2])){
             if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
+                seasonWins++;
                 seasonResults.push({ type: "result", winner: team[0], score: `${game[4]}-${game[5]}`});
             } else {
                 losses++;
+                seasonLosses++;
                 seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[3]), score: `${game[5]}-${game[4]}`});
             }
             goalsFor+=parseInt(game[4]);
@@ -302,13 +310,18 @@ async function teamResultsHistory(team, teamIDs, games){
         if(team.includes(game[3])){
             if(parseInt(game[5]) > parseInt(game[4])){
                 wins++;
+                seasonWins++;
                 seasonResults.push({ type: "result", winner: team[0], score: `${game[5]}-${game[4]}`});
             } else {
                 losses++;
+                seasonLosses++;
                 seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[2]), score: `${game[4]}-${game[5]}`});
             }
             goalsFor+=parseInt(game[5]);
             goalsAgainst+=parseInt(game[4]);
+        }
+        if(games.indexOf(game) == games.length-1 && seasonResults.length > 0){
+            seasonRecords.push([season, seasonWins, seasonLosses]);
         }
     });
 
@@ -319,7 +332,7 @@ async function teamResultsHistory(team, teamIDs, games){
 
     document.getElementById("teamResults").getElementsByClassName("overallRecord")[0].getElementsByTagName("p")[0].innerHTML = wins + " - " + losses;
     document.getElementById("teamResults").getElementsByClassName("overallRecord")[0].getElementsByTagName("p")[1].innerHTML = "GF " + goalsFor + " - " + goalsAgainst + " GA";
-    const tableBody = document.getElementById("teamResults").getElementsByClassName("historicalResults")[0];
+    let tableBody = document.getElementById("teamResults").getElementsByClassName("historicalResults")[0];
     tableBody.replaceChildren();
 
     gameLogs.forEach(game => {
@@ -341,6 +354,21 @@ async function teamResultsHistory(team, teamIDs, games){
             row.appendChild(scoreLine);
         }
 
+        tableBody.appendChild(row);
+    });
+
+
+    tableBody = document.getElementById("seasonResults").getElementsByClassName("historicalResults")[0];
+    tableBody.replaceChildren();
+
+    seasonRecords.forEach(record => {
+        const row = document.createElement("tr");
+        const curSeason = document.createElement("td");
+        curSeason.textContent = record[0];
+        const seasonRecord = document.createElement("td");
+        seasonRecord.textContent = record[1] + "-" + record[2];
+        row.append(curSeason);
+        row.append(seasonRecord);
         tableBody.appendChild(row);
     });
 }
