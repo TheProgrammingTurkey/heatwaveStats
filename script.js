@@ -11,6 +11,36 @@ function parseCSV(text) {
     return rows.map(row => row.split(","));
 }
 
+function formatLastUpdated(value) {
+    if (!value) return "unknown";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+
+    return new Intl.DateTimeFormat(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short"
+    }).format(date);
+}
+
+async function updateLastUpdatedDisplay() {
+    const element = document.getElementById("lastUpdated");
+    if (!element) return;
+
+    try {
+        const response = await fetch("lastUpdated.json");
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const data = await response.json();
+        const timestamp = data.lastUpdated || data.timestamp;
+        element.textContent = timestamp
+            ? `Last updated: ${formatLastUpdated(timestamp)}`
+            : "Last updated: unavailable";
+    } catch (error) {
+        element.textContent = "Last updated: unavailable";
+    }
+}
+
 function teamNameFromId(teamIDs, id) {
     const team = teamIDs.find(row => row.slice(2).includes(String(id)));
     if(team) return team[0];
@@ -39,12 +69,14 @@ function populateTeamSelect(select, teamIDs, excludedIndex, selectedIndex) {
 }
 
 async function initStandings() {
+    updateLastUpdatedDisplay();
     const teamIDs = await loadCSV("ids.csv");
     const gameLogs = await loadCSV("data.csv");
     rankTeamsByWinPercentage(teamIDs, gameLogs);
 }
 
 async function initTeamData() {
+    updateLastUpdatedDisplay();
     const teamIDs = await loadCSV("ids.csv");
     const gameLogs = await loadCSV("data.csv");
     const teamSelect = document.getElementById("selectedTeam");
@@ -372,3 +404,5 @@ async function teamResultsHistory(team, teamIDs, games){
         tableBody.appendChild(row);
     });
 }
+
+updateLastUpdatedDisplay();

@@ -112,6 +112,13 @@ body {
     font-size: 42px;
 }
 
+.last-updated {
+    margin: 0 0 18px;
+    color: #666;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
 h1 {
     text-align: center;
 }
