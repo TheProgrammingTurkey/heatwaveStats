@@ -329,11 +329,11 @@ async function teamResultsHistory(team, teamIDs, games){
             if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
                 seasonWins++;
-                seasonResults.push({ type: "result", winner: team[0], score: `${game[4]}-${game[5]}`});
+                seasonResults.push({ type: "result", winner: "W vs " + teamNameFromId(teamIDs, game[3]), score: `${game[4]}-${game[5]}`});
             } else {
                 losses++;
                 seasonLosses++;
-                seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[3]), score: `${game[5]}-${game[4]}`});
+                seasonResults.push({ type: "result", winner: "L vs " + teamNameFromId(teamIDs, game[3]), score: `${game[5]}-${game[4]}`});
             }
             goalsFor+=parseInt(game[4]);
             goalsAgainst+=parseInt(game[5]);
@@ -343,11 +343,11 @@ async function teamResultsHistory(team, teamIDs, games){
             if(parseInt(game[5]) > parseInt(game[4])){
                 wins++;
                 seasonWins++;
-                seasonResults.push({ type: "result", winner: team[0], score: `${game[5]}-${game[4]}`});
+                seasonResults.push({ type: "result", winner: "W vs " + teamNameFromId(teamIDs, game[2]), score: `${game[5]}-${game[4]}`});
             } else {
                 losses++;
                 seasonLosses++;
-                seasonResults.push({ type: "result", winner: teamNameFromId(teamIDs, game[2]), score: `${game[4]}-${game[5]}`});
+                seasonResults.push({ type: "result", winner: "L vs " + teamNameFromId(teamIDs, game[2]), score: `${game[4]}-${game[5]}`});
             }
             goalsFor+=parseInt(game[5]);
             goalsAgainst+=parseInt(game[4]);
