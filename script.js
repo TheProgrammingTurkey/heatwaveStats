@@ -78,8 +78,7 @@ async function initStandings() {
 async function initMisc() {
     const teamIDs = await loadCSV("ids.csv");
     const gameLogs = await loadCSV("data.csv");
-    updateWinStreaks(teamIDs, gameLogs);
-    updateLossStreaks(teamIDs, gameLogs);
+    updateStreaks(teamIDs, gameLogs);
 }
 
 async function initTeamData() {
@@ -412,65 +411,14 @@ async function teamResultsHistory(team, teamIDs, games){
     });
 }
 
-async function updateWinStreaks(teams, games){
+async function updateStreaks(teams, games){
     let winStreaks = [];
+    let lossStreaks = [];
     // Count a win or loss whenever this team appears in a completed game.
     teams.forEach(team => {
         let winStreak = 0;
         let startDate = "";
-        games.forEach(game => {
-            if(team.includes(game[2])){
-                if(parseInt(game[4]) >= parseInt(game[5])){
-                    winStreak++;
-                    if(winStreak == 1){
-                        startDate = game[1];
-                    }
-                } else {
-                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
-                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
-                    }
-                    winStreak = 0;
-                }
-            }
-            if(team.includes(game[3])){
-                if(parseInt(game[5]) >= parseInt(game[4])){
-                    winStreak++;
-                    if(winStreak == 1){
-                        startDate = game[1];
-                    }
-                } else {
-                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
-                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
-                    }
-                    winStreak = 0;
-                }
-            }
-        });
-        if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
-            winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
-        }
-    });
-    const tableBody = document.getElementById("winStreaks");
-    tableBody.replaceChildren();
-
-    winStreaks.forEach(streak => {
-        // Use textContent instead of HTML strings so team names are treated as text.
-        const row = document.createElement("tr");
-        [streak[0], streak[1], streak[2]].forEach(value => {
-            const cell = document.createElement("td");
-            cell.textContent = value;
-            row.appendChild(cell);
-        });
-        tableBody.appendChild(row);
-    });
-}
-
-async function updateLossStreaks(teams, games){
-    let lossStreaks = [];
-    // Count a win or loss whenever this team appears in a completed game.
-    teams.forEach(team => {
         let lossStreak = 0;
-        let startDate = "";
         games.forEach(game => {
             if(team.includes(game[2])){
                 if(parseInt(game[4]) > parseInt(game[5])){
@@ -478,7 +426,15 @@ async function updateLossStreaks(teams, games){
                         lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
-                } else {
+                    winStreak++;
+                    if(winStreak == 1){
+                        startDate = game[1];
+                    }
+                } else if(parseInt(game[4]) < parseInt(game[5])){
+                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
+                    }
+                    winStreak = 0;
                     lossStreak++;
                     if(lossStreak == 1){
                         startDate = game[1];
@@ -491,7 +447,15 @@ async function updateLossStreaks(teams, games){
                         lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
-                } else {
+                    winStreak++;
+                    if(winStreak == 1){
+                        startDate = game[1];
+                    }
+                } else if(parseInt(game[5]) < parseInt(game[4])) {
+                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
+                    }
+                    winStreak = 0;
                     lossStreak++;
                     if(lossStreak == 1){
                         startDate = game[1];
@@ -499,11 +463,28 @@ async function updateLossStreaks(teams, games){
                 }
             }
         });
+        if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+            winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
+        }
         if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
             lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
         }
     });
-    const tableBody = document.getElementById("lossStreaks");
+    let tableBody = document.getElementById("winStreaks");
+    tableBody.replaceChildren();
+
+    winStreaks.forEach(streak => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [streak[0], streak[1], streak[2]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+
+    tableBody = document.getElementById("lossStreaks");
     tableBody.replaceChildren();
 
     lossStreaks.forEach(streak => {
