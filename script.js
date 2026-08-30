@@ -75,6 +75,13 @@ async function initStandings() {
     rankTeamsByWinPercentage(teamIDs, gameLogs);
 }
 
+async function initMisc() {
+    const teamIDs = await loadCSV("ids.csv");
+    const gameLogs = await loadCSV("data.csv");
+    updateWinStreaks(teamIDs, gameLogs);
+    updateLossStreaks(teamIDs, gameLogs);
+}
+
 async function initTeamData() {
     updateLastUpdatedDisplay();
     const teamIDs = await loadCSV("ids.csv");
@@ -403,6 +410,126 @@ async function teamResultsHistory(team, teamIDs, games){
         row.append(seasonRecord);
         tableBody.appendChild(row);
     });
+}
+
+async function updateWinStreaks(teams, games){
+    let winStreaks = [];
+    // Count a win or loss whenever this team appears in a completed game.
+    teams.forEach(team => {
+        let winStreak = 0;
+        let startDate = "";
+        games.forEach(game => {
+            if(team.includes(game[2])){
+                if(parseInt(game[4]) >= parseInt(game[5])){
+                    winStreak++;
+                    if(winStreak == 1){
+                        startDate = game[1];
+                    }
+                } else {
+                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
+                    }
+                    winStreak = 0;
+                }
+            }
+            if(team.includes(game[3])){
+                if(parseInt(game[5]) >= parseInt(game[4])){
+                    winStreak++;
+                    if(winStreak == 1){
+                        startDate = game[1];
+                    }
+                } else {
+                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
+                    }
+                    winStreak = 0;
+                }
+            }
+        });
+        if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+            winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
+        }
+    });
+    const tableBody = document.getElementById("winStreaks");
+    tableBody.replaceChildren();
+
+    winStreaks.forEach(streak => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [streak[0], streak[1], streak[2]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+}
+
+async function updateLossStreaks(teams, games){
+    let lossStreaks = [];
+    // Count a win or loss whenever this team appears in a completed game.
+    teams.forEach(team => {
+        let lossStreak = 0;
+        let startDate = "";
+        games.forEach(game => {
+            if(team.includes(game[2])){
+                if(parseInt(game[4]) > parseInt(game[5])){
+                    if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+                        lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
+                    }
+                    lossStreak = 0;
+                } else {
+                    lossStreak++;
+                    if(lossStreak == 1){
+                        startDate = game[1];
+                    }
+                }
+            }
+            if(team.includes(game[3])){
+                if(parseInt(game[5]) > parseInt(game[4])){
+                    if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+                        lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
+                    }
+                    lossStreak = 0;
+                } else {
+                    lossStreak++;
+                    if(lossStreak == 1){
+                        startDate = game[1];
+                    }
+                }
+            }
+        });
+        if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+            lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+        }
+    });
+    const tableBody = document.getElementById("lossStreaks");
+    tableBody.replaceChildren();
+
+    lossStreaks.forEach(streak => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [streak[0], streak[1], streak[2]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+}
+
+function adjustRanking(array, entry){
+    if(array.length >= 10 && entry[1] > array[9][1]){
+        array.pop();
+        array.push(entry);
+    }
+    else if(array.length < 10){
+        array.push(entry);
+    }
+    array.sort((a, b) => {
+        return b[1] - a[1];
+    });
+    return array;
 }
 
 updateLastUpdatedDisplay();

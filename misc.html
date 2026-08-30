@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatwave Stats | Standings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="heatwaveStats.png">
+    <script src="script.js" defer></script>
+</head>
+<body onload="initMisc();">
+    <nav class="navbar" aria-label="Main navigation">
+        <a class="nav-brand" href="index.html">Heatwave Stats</a>
+        <div class="nav-links">
+            <a href="standings.html">Standings</a>
+            <a href="teamData.html">Team Data</a>
+            <a class="active" href="misc.html">Misc Stats</a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="page-heading">
+            <h1>Miscellaneous Stats</h1>
+            <br>
+            <p id="lastUpdated" class="last-updated" aria-live="polite">Loading last update...</p>
+        </header>
+
+        <div class="tier-section">
+            <h2 class="tier-header" style="background-color: #77dd77; color: #333;">Longest Win Streaks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Win streak</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="winStreaks"></tbody>
+            </table>
+        </div>
+        <div class="tier-section">
+            <h2 class="tier-header" style="background-color: #FAA0A0; color: #333;">Longest Losing Streaks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Team Name</th>
+                        <th>Loss streak</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="lossStreaks"></tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
