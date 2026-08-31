@@ -1,3 +1,20 @@
+let amtOfGames = "all";
+const gameAmtSelection = document.getElementById("amtOfGamesSelection");
+
+if (gameAmtSelection) {
+    gameAmtSelection.addEventListener("change", async function () {
+
+        amtOfGames = Number(this.value);
+
+        const [teamIDs, gameLogs] = await Promise.all([
+            loadCSV("ids.csv"),
+            loadCSV("data.csv")
+        ]);
+
+        rankTeamsByWinPercentage(teamIDs, gameLogs);
+    });
+}
+
 async function loadCSV(url) {
     // Fetch a CSV file from the same folder as the webpage.
     const res = await fetch(url);
@@ -44,8 +61,6 @@ async function updateLastUpdatedDisplay() {
 function teamNameFromId(teamIDs, id) {
     const team = teamIDs.find(row => row.slice(2).includes(String(id)));
     if(team) return team[0];
-
-    console.warn("Unknown team ID:", id);
     return `Unknown team (${id})`;
 }
 
@@ -118,7 +133,14 @@ async function allTimeRecord(games, team){
     let wins = 0;
     let losses = 0;
     // Count a win or loss whenever this team appears in a completed game.
-    games.forEach(game => {
+    games = [...games].reverse();
+    for (const game of games) {
+        if (amtOfGames == "10" && (wins + losses >= 10 || team[1] == "N/A")) {
+            break;
+        }
+        if (amtOfGames == "20" && (wins + losses >= 20 || team[1] == "N/A")) {
+            break;
+        }
         if(team.includes(game[2])){
             if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
@@ -134,7 +156,7 @@ async function allTimeRecord(games, team){
                 losses++;
             }
         }
-    });
+    }
     let winPercentage = Math.round((wins/(wins+losses))*1000)/1000;
     return [team[0], wins, losses, winPercentage];
 }
@@ -162,7 +184,6 @@ async function rankTeamsByWinPercentage(teamIDs, gameLogs){
         else if(team[1] == "N/A"){
             naStats.push(await allTimeRecord(gameLogs, team));
         }
-        console.log((teamIDs.indexOf(team)+1) + " Out of " + teamIDs.length + " Teams Done");
     }
 
     // Sort every division from highest to lowest win percentage.
@@ -207,6 +228,13 @@ async function rankTeamsByWinPercentage(teamIDs, gameLogs){
             tableBody.appendChild(row);
         });
     });
+
+    if(amtOfGames == "all"){
+        document.getElementsByClassName("tier-section")[4].style.display = "Block";
+    }
+    else{
+        document.getElementsByClassName("tier-section")[4].style.display = "None";
+    }
 }
 
 async function teamVSteam(games, team1, team2){

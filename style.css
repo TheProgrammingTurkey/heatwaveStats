@@ -327,6 +327,63 @@ th:nth-child(n+2) {
     text-align: center;
 }
 
+.controls {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 30px;
+}
+
+#amtOfGamesSelection {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding: 10px 40px 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #333;
+
+    cursor: pointer;
+    outline: none;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+#amtOfGamesSelection:hover {
+    border-color: #a855f7; /* subtle purple to match Platinum */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+/* Focus (when clicked) */
+#amtOfGamesSelection:focus {
+    border-color: #9333ea;
+    box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.15);
+}
+
+/* Custom dropdown arrow */
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.select-wrapper::after {
+    content: "▾";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 12px;
+    color: #666;
+}
+
 @media screen and (max-width: 900px) {
     h2{
         font-size: 15px;
