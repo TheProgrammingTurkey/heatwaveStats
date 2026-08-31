@@ -552,7 +552,7 @@ async function updateStreaks(teams, games){
     biggestBlowouts.forEach(blowout => {
         // Use textContent instead of HTML strings so team names are treated as text.
         const row = document.createElement("tr");
-        [teamNameFromId(teams, blowout[2]) + " vs " + teamNameFromId(teams, blowout[3]), blowout[4] + "-" + blowout[5], blowout[0]].forEach(value => {
+        [teamNameFromId(teams, blowout[2]) + " vs " + teamNameFromId(teams, blowout[3]), blowout[4] + "-" + blowout[5], blowout[1]].forEach(value => {
             const cell = document.createElement("td");
             cell.textContent = value;
             row.appendChild(cell);
