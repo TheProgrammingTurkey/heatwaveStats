@@ -4,15 +4,27 @@ const gameAmtSelection = document.getElementById("amtOfGamesSelection");
 if (gameAmtSelection) {
     gameAmtSelection.addEventListener("change", async function () {
 
-        amtOfGames = Number(this.value);
+        amtOfGames = this.value;
 
         const [teamIDs, gameLogs] = await Promise.all([
             loadCSV("ids.csv"),
             loadCSV("data.csv")
         ]);
 
-        rankTeamsByWinPercentage(teamIDs, gameLogs);
+        await rankTeamsByWinPercentage(teamIDs, gameLogs);
+
+        updateTierVisibility(); // 🔥 IMPORTANT: AFTER render
     });
+}
+
+function updateTierVisibility() {
+    const naSection = document.getElementById("naSection");
+
+    if (amtOfGames === "all") {
+        naSection.style.display = "block";
+    } else {
+        naSection.style.display = "none";
+    }
 }
 
 async function loadCSV(url) {
@@ -228,13 +240,6 @@ async function rankTeamsByWinPercentage(teamIDs, gameLogs){
             tableBody.appendChild(row);
         });
     });
-
-    if(amtOfGames == "all"){
-        document.getElementsByClassName("tier-section")[4].style.display = "Block";
-    }
-    else{
-        document.getElementsByClassName("tier-section")[4].style.display = "None";
-    }
 }
 
 async function teamVSteam(games, team1, team2){
