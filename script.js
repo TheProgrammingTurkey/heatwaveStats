@@ -411,11 +411,17 @@ async function teamResultsHistory(team, teamIDs, games){
     });
 }
 
+function isCurTeam(teams, teamId) {
+    const team = teams.find(candidate => candidate.includes(String(teamId)));
+    return Boolean(team && team[1] !== "N/A");
+}
+
 async function updateStreaks(teams, games){
     let winStreaks = [];
     let lossStreaks = [];
     let curWinStreaks = [];
     let curLossStreaks = [];
+    let biggestBlowouts = [];
     // Count a win or loss whenever this team appears in a completed game.
     teams.forEach(team => {
         let winStreak = 0;
@@ -425,16 +431,19 @@ async function updateStreaks(teams, games){
             if(team.includes(game[2])){
                 if(parseInt(game[4]) > parseInt(game[5])){
                     if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
-                        lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
+                        lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
                     winStreak++;
                     if(winStreak == 1){
                         startDate = game[1];
                     }
+                    if(team[1] != "N/A" && isCurTeam(teams, game[3]) && (biggestBlowouts.length < 10 || parseInt(game[4])-parseInt(game[5]) > Math.abs(parseInt(biggestBlowouts[biggestBlowouts.length-1][4])-parseInt(biggestBlowouts[biggestBlowouts.length-1][5])))){
+                        biggestBlowouts = adjustBlowoutRanking(biggestBlowouts, game);
+                    }
                 } else if(parseInt(game[4]) < parseInt(game[5])){
                     if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
-                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
+                        winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
                     }
                     winStreak = 0;
                     lossStreak++;
@@ -446,16 +455,19 @@ async function updateStreaks(teams, games){
             if(team.includes(game[3])){
                 if(parseInt(game[5]) > parseInt(game[4])){
                     if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
-                        lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
+                        lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
                     winStreak++;
                     if(winStreak == 1){
                         startDate = game[1];
                     }
+                    if(team[1] != "N/A" && isCurTeam(teams, game[2]) && (biggestBlowouts.length < 10 || parseInt(game[5])-parseInt(game[4]) > Math.abs(parseInt(biggestBlowouts[biggestBlowouts.length-1][4])-parseInt(biggestBlowouts[biggestBlowouts.length-1][5])))){
+                        biggestBlowouts = adjustBlowoutRanking(biggestBlowouts, [game[0], game[1], game[3], game[2], game[5], game[4]]);
+                    }
                 } else if(parseInt(game[5]) < parseInt(game[4])) {
                     if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
-                        winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
+                        winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
                     }
                     winStreak = 0;
                     lossStreak++;
@@ -466,16 +478,16 @@ async function updateStreaks(teams, games){
             }
         });
         if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
-            winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
+            winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
         }
         if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
-            lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+            lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
         }
         if(team[1] != "N/A" && winStreak > 1 && (curWinStreaks.length < 10 || winStreak > curWinStreaks[curWinStreaks.length-1][1])){
-            curWinStreaks = adjustRanking(curWinStreaks, [team[0], winStreak, startDate + " - Current"]);
+            curWinStreaks = adjustStreakRanking(curWinStreaks, [team[0], winStreak, startDate + " - Current"]);
         }
         if(team[1] != "N/A" && lossStreak > 1 && (curLossStreaks.length < 10 || lossStreak > curLossStreaks[curLossStreaks.length-1][1])){
-            curLossStreaks = adjustRanking(curLossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+            curLossStreaks = adjustStreakRanking(curLossStreaks, [team[0], lossStreak, startDate + " - Current"]);
         }
     });
     let tableBody = document.getElementById("winStreaks");
@@ -533,9 +545,23 @@ async function updateStreaks(teams, games){
         });
         tableBody.appendChild(row);
     });
+
+    tableBody = document.getElementById("biggestBlowouts");
+    tableBody.replaceChildren();
+
+    biggestBlowouts.forEach(blowout => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [teamNameFromId(teams, blowout[2]) + " vs " + teamNameFromId(teams, blowout[3]), blowout[4] + "-" + blowout[5], blowout[0]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
 }
 
-function adjustRanking(array, entry){
+function adjustStreakRanking(array, entry){
     if(array.length >= 10 && entry[1] > array[9][1]){
         array.pop();
         array.push(entry);
@@ -545,6 +571,19 @@ function adjustRanking(array, entry){
     }
     array.sort((a, b) => {
         return b[1] - a[1];
+    });
+    return array;
+}
+function adjustBlowoutRanking(array, entry){
+    if(array.length >= 10 && Math.abs(parseInt(entry[4])-parseInt(entry[5])) > Math.abs(parseInt(array[9][4])-parseInt(array[9][5]))){
+        array.pop();
+        array.push(entry);
+    }
+    else if(array.length < 10){
+        array.push(entry);
+    }
+    array.sort((a, b) => {
+        return Math.abs(parseInt(b[4])-parseInt(b[5]))-Math.abs(parseInt(a[4])-parseInt(a[5]));
     });
     return array;
 }
