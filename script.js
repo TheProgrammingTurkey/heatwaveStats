@@ -414,6 +414,8 @@ async function teamResultsHistory(team, teamIDs, games){
 async function updateStreaks(teams, games){
     let winStreaks = [];
     let lossStreaks = [];
+    let curWinStreaks = [];
+    let curLossStreaks = [];
     // Count a win or loss whenever this team appears in a completed game.
     teams.forEach(team => {
         let winStreak = 0;
@@ -422,7 +424,7 @@ async function updateStreaks(teams, games){
         games.forEach(game => {
             if(team.includes(game[2])){
                 if(parseInt(game[4]) > parseInt(game[5])){
-                    if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+                    if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
                         lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
@@ -431,7 +433,7 @@ async function updateStreaks(teams, games){
                         startDate = game[1];
                     }
                 } else if(parseInt(game[4]) < parseInt(game[5])){
-                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                    if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
                         winStreaks = adjustRanking(winStreaks, [team[0], winStreak,  startDate + " - " + game[1]]);
                     }
                     winStreak = 0;
@@ -443,7 +445,7 @@ async function updateStreaks(teams, games){
             }
             if(team.includes(game[3])){
                 if(parseInt(game[5]) > parseInt(game[4])){
-                    if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+                    if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
                         lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak,  startDate + " - " + game[1]]);
                     }
                     lossStreak = 0;
@@ -452,7 +454,7 @@ async function updateStreaks(teams, games){
                         startDate = game[1];
                     }
                 } else if(parseInt(game[5]) < parseInt(game[4])) {
-                    if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+                    if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
                         winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - " + game[1]]);
                     }
                     winStreak = 0;
@@ -463,11 +465,17 @@ async function updateStreaks(teams, games){
                 }
             }
         });
-        if(winStreaks.length == 0 || winStreak > winStreaks[winStreaks.length-1][1]){
+        if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
             winStreaks = adjustRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
         }
-        if(lossStreaks.length == 0 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
+        if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
             lossStreaks = adjustRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+        }
+        if(team[1] != "N/A" && winStreak > 1 && (curWinStreaks.length < 10 || winStreak > curWinStreaks[curWinStreaks.length-1][1])){
+            curWinStreaks = adjustRanking(curWinStreaks, [team[0], winStreak, startDate + " - Current"]);
+        }
+        if(team[1] != "N/A" && lossStreak > 1 && (curLossStreaks.length < 10 || lossStreak > curLossStreaks[curLossStreaks.length-1][1])){
+            curLossStreaks = adjustRanking(curLossStreaks, [team[0], lossStreak, startDate + " - Current"]);
         }
     });
     let tableBody = document.getElementById("winStreaks");
@@ -488,6 +496,34 @@ async function updateStreaks(teams, games){
     tableBody.replaceChildren();
 
     lossStreaks.forEach(streak => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [streak[0], streak[1], streak[2]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+
+    tableBody = document.getElementById("curWinStreaks");
+    tableBody.replaceChildren();
+
+    curWinStreaks.forEach(streak => {
+        // Use textContent instead of HTML strings so team names are treated as text.
+        const row = document.createElement("tr");
+        [streak[0], streak[1], streak[2]].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+        tableBody.appendChild(row);
+    });
+
+    tableBody = document.getElementById("curLossStreaks");
+    tableBody.replaceChildren();
+
+    curLossStreaks.forEach(streak => {
         // Use textContent instead of HTML strings so team names are treated as text.
         const row = document.createElement("tr");
         [streak[0], streak[1], streak[2]].forEach(value => {
