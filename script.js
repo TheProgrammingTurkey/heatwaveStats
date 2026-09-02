@@ -156,7 +156,7 @@ async function allTimeRecord(games, team){
         if(team.includes(game[2])){
             if(parseInt(game[4]) > parseInt(game[5])){
                 wins++;
-            } else {
+            } else if(parseInt(game[4]) < parseInt(game[5])){
                 losses++;
             }
         }
@@ -164,7 +164,7 @@ async function allTimeRecord(games, team){
         if(team.includes(game[3])){
             if(parseInt(game[5]) > parseInt(game[4])){
                 wins++;
-            } else {
+            } else if(parseInt(game[5]) < parseInt(game[4])){
                 losses++;
             }
         }
@@ -279,7 +279,7 @@ async function teamVSteam(games, team1, team2){
             if(parseInt(game[4]) > parseInt(game[5])){
                 team1Wins++;
                 seasonResults.push({ type: "result", winner: team1[0], score: `${game[4]}-${game[5]}` });
-            } else {
+            } else if(parseInt(game[4]) < parseInt(game[5])){
                 team1Losses++;
                 seasonResults.push({ type: "result", winner: team2[0], score: `${game[5]}-${game[4]}` });
             }
@@ -291,7 +291,7 @@ async function teamVSteam(games, team1, team2){
             if(parseInt(game[5]) > parseInt(game[4])){
                 team1Wins++;
                 seasonResults.push({ type: "result", winner: team1[0], score: `${game[5]}-${game[4]}` });
-            } else {
+            } else if(parseInt(game[5]) < parseInt(game[4])){
                 team1Losses++;
                 seasonResults.push({ type: "result", winner: team2[0], score: `${game[4]}-${game[5]}` });
             }
@@ -369,7 +369,7 @@ async function teamResultsHistory(team, teamIDs, games){
                 wins++;
                 seasonWins++;
                 seasonResults.push({ type: "result", winner: "W vs " + teamNameFromId(teamIDs, game[3]), score: `${game[4]}-${game[5]}`});
-            } else {
+            } else if(parseInt(game[4]) < parseInt(game[5])){
                 losses++;
                 seasonLosses++;
                 seasonResults.push({ type: "result", winner: "L vs " + teamNameFromId(teamIDs, game[3]), score: `${game[5]}-${game[4]}`});
@@ -383,7 +383,7 @@ async function teamResultsHistory(team, teamIDs, games){
                 wins++;
                 seasonWins++;
                 seasonResults.push({ type: "result", winner: "W vs " + teamNameFromId(teamIDs, game[2]), score: `${game[5]}-${game[4]}`});
-            } else {
+            } else if(parseInt(game[5]) < parseInt(game[4])){
                 losses++;
                 seasonLosses++;
                 seasonResults.push({ type: "result", winner: "L vs " + teamNameFromId(teamIDs, game[2]), score: `${game[4]}-${game[5]}`});
