@@ -13,7 +13,7 @@ if (gameAmtSelection) {
 
         await rankTeamsByWinPercentage(teamIDs, gameLogs);
 
-        updateTierVisibility(); // 🔥 IMPORTANT: AFTER render
+        updateTierVisibility();
     });
 }
 
@@ -168,6 +168,9 @@ async function allTimeRecord(games, team){
                 losses++;
             }
         }
+    }
+    if(wins + losses === 0) {
+        return [team[0], wins, losses, "N/A"];
     }
     let winPercentage = Math.round((wins/(wins+losses))*1000)/1000;
     return [team[0], wins, losses, winPercentage];
