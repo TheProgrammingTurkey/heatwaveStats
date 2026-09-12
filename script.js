@@ -514,10 +514,20 @@ async function updateStreaks(teams, games){
             }
         });
         if(winStreaks.length < 10 || winStreak > winStreaks[winStreaks.length-1][1]){
-            winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
+            if(team[1] == "N/A"){
+                winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak, startDate + " - " + games[games.length-1][1]]);
+            }
+            else{
+                winStreaks = adjustStreakRanking(winStreaks, [team[0], winStreak, startDate + " - Current"]);
+            }
         }
         if(lossStreaks.length < 10 || lossStreak > lossStreaks[lossStreaks.length-1][1]){
-            lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+            if(team[1] == "N/A"){
+                lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak, startDate + " - " + games[games.length-1][1]]);
+            }
+            else{
+                lossStreaks = adjustStreakRanking(lossStreaks, [team[0], lossStreak, startDate + " - Current"]);
+            }
         }
         if(team[1] != "N/A" && winStreak > 1 && (curWinStreaks.length < 10 || winStreak > curWinStreaks[curWinStreaks.length-1][1])){
             curWinStreaks = adjustStreakRanking(curWinStreaks, [team[0], winStreak, startDate + " - Current"]);
